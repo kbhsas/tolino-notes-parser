@@ -11,6 +11,7 @@ block_re = re.compile(r'\n'.join([
     ]))
 
 def main():
+    d = {}
     with open("notes.txt") as f:
         text = f.read()
         #text = text.replace(u'\xa0', u' ')
@@ -19,11 +20,15 @@ def main():
     for block in blocks:
         m = block_re.search(block)
         if m:
-            print(m.group("title"))
-            print(m.group("quote"))
-            if m.group("note"):
-                print(m.group("note"))
-            print(delim)
+            book = m.group("title")
+            page = m.group("page")
+            quote = m.group("quote")
+            note = m.group("note")
+            if book in d.keys():
+                d[book].append([page, quote, note]) if note else d[book].append([page, quote])
+            else:
+                d[book] = [[page, quote, note] if note else [page, quote]]
+        print(d)
 
 if(__name__=="__main__"):
     main()
