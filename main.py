@@ -9,6 +9,13 @@ block_re = re.compile(r'\n'.join([
     r'((?P<type>Lesezeichen|Markierung|Notiz)\sauf\sSeite\s(?P<page>\d+):\s)' + r'''((?P<note>(?:.|\n)*))?''' + r'"(?P<quote>(?:.|\n)*)"',
     r'(Hinzugefügt|Geändert)\sam\s(?P<day>\d{2}).(?P<month>\d{2}).(?P<year>\d{4})',
     ]))
+def md_export(d):
+    for book in d:
+        print("# {}".format(book))
+        for note in d[book]:
+            #[page, quote, note] if note else [page, quote]
+            print("\t- {}".format(note[0]))
+            print("\t\t- {}".format(note[1]))
 
 def main():
     d = {}
@@ -28,7 +35,7 @@ def main():
                 d[book].append([page, quote, note]) if note else d[book].append([page, quote])
             else:
                 d[book] = [[page, quote, note] if note else [page, quote]]
-        print(d)
+    md_export(d)
 
 if(__name__=="__main__"):
     main()
