@@ -17,6 +17,19 @@ def md_export(d):
             print("\t- {}".format(note[0]))
             print("\t\t- {}".format(note[1]))
 
+def write_to_file(d):
+    with open("output.txt", 'w+') as f:
+        for book in d:
+            f.write("# {}".format(book))
+            f.write('\n')
+            for note in d[book]:
+                f.write("\t- {}".format(note[0]))
+                f.write('\n')
+                f.write("\t\t- {}".format(note[1]))
+                f.write('\n')
+            f.write(delim)
+            f.write('\n')
+
 def main():
     d = {}
     with open("notes.txt") as f:
@@ -35,7 +48,8 @@ def main():
                 d[book].append([page, quote, note]) if note else d[book].append([page, quote])
             else:
                 d[book] = [[page, quote, note] if note else [page, quote]]
-    md_export(d)
+    #md_export(d)
+    write_to_file(d)
 
 if(__name__=="__main__"):
     main()
