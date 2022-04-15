@@ -6,10 +6,11 @@ But once the data is ingested, further functionality and output formats would be
 
 ## Usage
 
-The input file (`notes.txt`) and the output type (file or stdout) are hard-coded right now.
+The input file (`notes.txt`) in the same directory by default. But it could be specified as an arguemt as follows:
 ``` bash
-python main.py
+python main.py -i /rel/path/to/file
 ```
+The output type (either to file `output.txt` or to stdout) is hard-coded right now.
 
 ## Shortcomings 
 
