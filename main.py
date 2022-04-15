@@ -31,7 +31,7 @@ def write_to_file(t):
 
 def sanitize(unit):
     a = re.sub('^\n','', unit)
-    b = re.sub('\s{2,}',' ', a)
+    b = re.sub('\s{2,}',' ', a) # This removed newlines chars from the middle of the string also. It is a rare case but the LotR highlight in the dataset has it.
     return b
 
 def main():
