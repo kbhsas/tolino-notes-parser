@@ -1,4 +1,6 @@
 import re
+import argparse
+import os
 
 #delimetor between not blocks
 delim = "-----------------------------------"
@@ -11,7 +13,11 @@ block_re = re.compile(r'\n'.join([
     ]))
 
 def main():
-    with open("notes.txt") as f:
+    ap = argparse.ArgumentParser()
+    ap.add_argument('-i', type=str, required=False)
+    args = ap.parse_args()
+    notes_file = os.path.abspath(args.i) if args.i else "notes.txt"
+    with open(notes_file) as f:
         text = f.read()
         #text = text.replace(u'\xa0', u' ')
         #text = re.sub('^\s*',"", text)
