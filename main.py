@@ -19,8 +19,7 @@ def md_export(d):
         parsed_text += "# {}\n".format(book)
         for page in d[book]:
             parsed_text+= "- p{}\n".format(page)
-            for note in d[book][page]:
-                #[date, quote, note] if note else [date, quote]
+            for note in d[book][page]: # this is a list: [date, quote, note] if note else [date, quote]
                 parsed_text+= "\t- > {}\n".format(note[1])
                 parsed_text+= "\t\t- On {}\n".format(note[0].strftime("%Y.%m.%d at %H:%M"))
                 if len(note) > 2: # then there's a note
@@ -35,19 +34,16 @@ def write_to_file(t):
 
 def sanitize(unit):
     a = re.sub('^\n','', unit)
-    b = re.sub('\s{2,}',' ', a) # This removed newlines chars from the middle of the string also. It is a rare case but the LotR highlight in the dataset has it.
+    b = re.sub('\s{2,}',' ', a) # This also removed newline characters from the middle of the string. It is a rare case but the LotR highlight in the dataset has it.
     return b
 
 def main():
     d = {}
-    # Parsing notes.txt
     with open("notes.txt") as f:
         text = f.read()
-        #text = text.replace(u'\xa0', u' ')
-        #text = re.sub('^\s*',"", text)
     blocks = text.split(delim)
     for block in blocks:
-        m = block_re.search(block)
+        m = block_re.search(block) # m for match
         if m:
             book = m.group("title")
             page = m.group("page")
@@ -66,7 +62,7 @@ def main():
                 else:
                     d[book][page] = [[date, quote, note]] if note else [[date, quote]]
             else:
-                d[book] = {page: [[date, quote, note]]} if note else {page: [[date, quote]]} #[[page, quote, note] if note else [page, quote]]
+                d[book] = {page: [[date, quote, note]]} if note else {page: [[date, quote]]}
     print(md_export(d))
     #write_to_file(md_export(d))
 
