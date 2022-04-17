@@ -23,8 +23,8 @@ def md_export(d):
         for page in d[book]:
             parsed_text+= "- p{}\n".format(page)
             for note in d[book][page]: # this is a list: [date, quote, note] if note else [date, quote]
-                parsed_text+= "\t- > {}\n".format(note[1])
-                parsed_text+= "\t\t- On {}\n".format(note[0].strftime("%Y.%m.%d at %H:%M"))
+                parsed_text+= "\t- On {}\n".format(note[0].strftime("%Y.%m.%d at %H:%M"))
+                parsed_text+= "\t\t- > {}\n".format(note[1])
                 if len(note) > 2: # then there's a note
                     parsed_text+= "\t\t\t- {}\n".format(note_prefix)
                     parsed_text+= "\t\t\t\t- {}\n".format(note[2])
