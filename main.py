@@ -64,24 +64,27 @@ def main():
     for block in blocks:
         m = block_re.search(block) # m for match
         if m:
-            book = m.group("title")
-            page = m.group("page")
-            quote = sanitize(m.group("quote"))
-            note = sanitize(m.group("note"))
-            date_string = "{}.{}.{} at {}:{}".format(
-                                                    m.group("year"),
-                                                    m.group("month"),
-                                                    m.group("day"),
-                                                    m.group("hour"),
-                                                    m.group("minute"))
-            date = datetime.strptime(date_string, "%Y.%m.%d at %H:%M")
-            if book in d.keys():
-                if page in d[book]:
-                    d[book][page].append([date, quote, note] if note else [date, quote])
-                else:
-                    d[book][page] = [[date, quote, note]] if note else [[date, quote]]
+            if m.group("type") == "Lesezeichen":
+                continue
             else:
-                d[book] = {page: [[date, quote, note]]} if note else {page: [[date, quote]]}
+                book = m.group("title")
+                page = m.group("page")
+                quote = sanitize(m.group("quote"))
+                note = sanitize(m.group("note"))
+                date_string = "{}.{}.{} at {}:{}".format(
+                                                        m.group("year"),
+                                                        m.group("month"),
+                                                        m.group("day"),
+                                                        m.group("hour"),
+                                                        m.group("minute"))
+                date = datetime.strptime(date_string, "%Y.%m.%d at %H:%M")
+                if book in d.keys():
+                    if page in d[book]:
+                        d[book][page].append([date, quote, note] if note else [date, quote])
+                    else:
+                        d[book][page] = [[date, quote, note]] if note else [[date, quote]]
+                else:
+                    d[book] = {page: [[date, quote, note]]} if note else {page: [[date, quote]]}
     print(md_export(d))
     write_to_file(md_export(d))
 
