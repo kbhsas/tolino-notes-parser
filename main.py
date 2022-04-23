@@ -17,18 +17,28 @@ note_prefix = "[[literature notes]]"
 date_format = "[[%Y.%m.%d %A]]"
 parsed_text = ""
 
+def fix_indent(t, indent_lvl, is_highlight):
+    prefix = (">" if is_highlight else "")
+    txt = indent_lvl*"\t" + "- "
+    for line in t.split('\n'):
+        txt += prefix + " " + line.strip() + "\n" # strip because of leading whitespace
+        prefix = indent_lvl*'\t' +  ("  >" if is_highlight else "  ")
+    return txt.rstrip("\n") #for loop leaves a trailing newline character.
+
 def md_export(d):
     global parsed_text # to access the global variable parsed_text
     for book in d:
         parsed_text += "# {}\n".format(book)
         for page in d[book]:
-            parsed_text+= "- p{}\n".format(page)
+            parsed_text += "- p{}\n".format(page)
             for note in d[book][page]: # this is a list: [date, quote, note] if note else [date, quote]
-                parsed_text+= "\t- On {}\n".format(note[0].strftime(date_format + " at %H:%M"))
-                parsed_text+= "\t\t- > {}\n".format(note[1])
+                parsed_text += "\t- On {}\n".format(note[0].strftime(date_format + " at %H:%M"))
+                parsed_text += fix_indent(note[1], 2, True)
+                parsed_text += "\n"
                 if len(note) > 2: # then there's a note
-                    parsed_text+= "\t\t\t- {}\n".format(note_prefix)
-                    parsed_text+= "\t\t\t\t- {}\n".format(note[2])
+                    parsed_text += "\t\t\t- {}\n".format(note_prefix)
+                    parsed_text += fix_indent(note[2], 4 ,False)
+                    parsed_text += "\n"
         parsed_text += delim +"\n"
     return parsed_text
 
@@ -38,8 +48,9 @@ def write_to_file(t):
 
 def sanitize(unit):
     a = re.sub('^\n','', unit)
-    b = re.sub('\s{2,}',' ', a) # This also removed newline characters from the middle of the string. It is a rare case but the LotR highlight in the dataset has it.
-    return b
+    b = re.sub('\n\s{2,}','\n', a) #For quotes. Removes leading white space in multi line highlights.
+    c = re.sub('\n$','', b) #This is for notes since they always have trailing new line characters
+    return c
 
 def main():
     d = {}
@@ -56,7 +67,7 @@ def main():
             book = m.group("title")
             page = m.group("page")
             quote = sanitize(m.group("quote"))
-            note = m.group("note")
+            note = sanitize(m.group("note"))
             date_string = "{}.{}.{} at {}:{}".format(
                                                     m.group("year"),
                                                     m.group("month"),
@@ -72,7 +83,7 @@ def main():
             else:
                 d[book] = {page: [[date, quote, note]]} if note else {page: [[date, quote]]}
     print(md_export(d))
-    #write_to_file(md_export(d))
+    write_to_file(md_export(d))
 
 if(__name__=="__main__"):
     main()
