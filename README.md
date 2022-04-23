@@ -14,11 +14,7 @@ The output type (either to file `output.txt` or to stdout) is hard-coded right n
 
 ## Shortcomings 
 
-* I'm still not sure how to handle sanitizing the highlighted text and notes. But here are some ideas:
-  * remove newline characters from beginnings of lines
-  * remove weird spacings ( multiple spaces or tabs etc. )
-    * current RegEx for this also removes newline characters when they occur in the middle of the string.
 * Duplicates are not yet accounted for.
   * When a note is added to a highlight
-  * When a note is edited (multiple time maybe) etc.
+  * When a note is edited (once or multiple times) etc.
   
