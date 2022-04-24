@@ -20,6 +20,8 @@ The script also prints to stdout.
 ## Shortcomings 
 
 * The output structure isn't configurable and so is only adjusted to my needs at the moment.
+* Tolino has to be set to german
+* Only Tolino firmwares `> 15.0.0` are supported.
 * Duplicates are not yet accounted for. For example:
   * When a note is added to a highlight
   * When a note is edited (once or multiple times) etc.
