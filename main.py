@@ -15,6 +15,7 @@ block_re = re.compile(r'\n'.join([
     ]))
 note_prefix = "[[literature notes]]"
 date_format = "[[%Y.%m.%d %A]]"
+time_format = "%H:%M"
 parsed_text = ""
 
 def fix_indent(t, indent_lvl, is_highlight):
@@ -32,7 +33,7 @@ def md_export(d):
         for page in d[book]:
             parsed_text += "- p{}\n".format(page)
             for note in d[book][page]: # this is a list: [date, quote, note] if note else [date, quote]
-                parsed_text += "\t- On {}\n".format(note[0].strftime(date_format + " at %H:%M"))
+                parsed_text += "\t- On {}\n".format(note[0].strftime(date_format + " at " + time_format))
                 parsed_text += fix_indent(note[1], 2, True)
                 parsed_text += "\n"
                 if len(note) > 2: # then there's a note
@@ -83,9 +84,10 @@ def parse_text(blocks):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('-i', type=str, required=False)
+    ap.add_argument('-o', type=str, required=False)
     args = ap.parse_args()
     notes_file = os.path.abspath(args.i) if args.i else "notes.txt"
-    output_file = "output.txt"
+    output_file = os.path.abspath(args.o) if args.o else "output.txt"
 
     with open(notes_file) as f:
         text = f.read()
