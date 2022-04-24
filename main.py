@@ -3,6 +3,7 @@ import re
 import argparse
 import os
 from datetime import datetime
+import pandas as pd
 
 #delimetor between not blocks
 delim = "-----------------------------------"
@@ -73,12 +74,13 @@ def parse_text(blocks):
                                                         m.group("minute"))
                 date = datetime.strptime(date_string, "%Y.%m.%d at %H:%M")
                 if book in d.keys():
-                    if page in d[book]:
-                        d[book][page].append([date, quote, note] if note else [date, quote])
-                    else:
-                        d[book][page] = [[date, quote, note]] if note else [[date, quote]]
+                    d[book]["page"].append(page)
+                    d[book]["date"].append(date.date())
+                    d[book]["time"].append(date.time())
+                    d[book]["quote"].append(quote)
+                    d[book]["note"].append(note if note else False)
                 else:
-                    d[book] = {page: [[date, quote, note]]} if note else {page: [[date, quote]]}
+                    d[book] = {"page": [page], "date": [date.date()], "time": [date.time()], "quote": [quote], "note": [note if note else False]}
     return d
 
 def main():
@@ -94,8 +96,16 @@ def main():
 
     blocks = text.split(delim)
     d = parse_text(blocks)
-    print(md_export(d))
-    write_to_file(md_export(d), output_file)
+    for book in d:
+        print("# {}".format(book))
+        df = pd.DataFrame.from_dict(d[book])
+        to_delete = df[df.duplicated(["quote"], keep="last")].index
+        book_notes = df.drop(to_delete)
+        print(book_notes.reset_index())
+        print(delim)
+
+    #print(md_export(d))
+    #write_to_file(md_export(d), output_file)
 
 if(__name__=="__main__"):
     main()
