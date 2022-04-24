@@ -1,3 +1,5 @@
 __pycache__/
 *.txt
 !notes.txt
+!sample_output.txt
+!requirements.txt

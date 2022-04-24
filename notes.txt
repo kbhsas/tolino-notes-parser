@@ -33,7 +33,7 @@ Hinzugefügt am 27.03.2022 | 22:29
 -----------------------------------
 
 The Fellowship of the Ring (Tolkien, J. R. R.)
-Notiz auf Seite 5: this could have weird spacings/space characters
+Notiz auf Seite 5: this could have weird white space characters
 "
 Three Rings for the Elven-kings under the sky,
       Seven for the Dwarf-lords in their halls of stone,
@@ -48,8 +48,8 @@ Hinzugefügt am 27.03.2022 | 22:30
 -----------------------------------
 
 The Light Fantastic (Pratchett, Terry)
-Notiz auf Seite 31: very witty special relativity referece. also bukds on previously established in-world physics sibce light is slower here.
-thisus a multiline note with possible weird white spacen the highlighted text.
+Notiz auf Seite 31: very witty special relativity referece. also builds on previously established in-world physics since light is slower on the Discworld.
+this is a multiline note with possible weird white space in the highlighted text.
 "Galder laughed. And the knife left Trymon’s hand at such speed that (because of the somewhat sluggish nature of Disc light) it actually grew a bit shorter and a little more massive as it plunged, with unerring aim, toward Galder’s neck.
 
       It didn’t reach it. "
