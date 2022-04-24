@@ -42,8 +42,8 @@ def md_export(d):
         parsed_text += delim +"\n"
     return parsed_text
 
-def write_to_file(t):
-    with open("output.txt", 'w+') as f:
+def write_to_file(t, output_file):
+    with open(output_file, 'w+') as f:
         f.write(t)
 
 def sanitize(unit):
@@ -52,15 +52,8 @@ def sanitize(unit):
     c = re.sub('\n$','', b) #This is for notes since they always have trailing new line characters
     return c
 
-def main():
+def parse_text(blocks):
     d = {}
-    ap = argparse.ArgumentParser()
-    ap.add_argument('-i', type=str, required=False)
-    args = ap.parse_args()
-    notes_file = os.path.abspath(args.i) if args.i else "notes.txt"
-    with open(notes_file) as f:
-        text = f.read()
-    blocks = text.split(delim)
     for block in blocks:
         m = block_re.search(block) # m for match
         if m:
@@ -85,8 +78,22 @@ def main():
                         d[book][page] = [[date, quote, note]] if note else [[date, quote]]
                 else:
                     d[book] = {page: [[date, quote, note]]} if note else {page: [[date, quote]]}
+    return d
+
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument('-i', type=str, required=False)
+    args = ap.parse_args()
+    notes_file = os.path.abspath(args.i) if args.i else "notes.txt"
+    output_file = "output.txt"
+
+    with open(notes_file) as f:
+        text = f.read()
+
+    blocks = text.split(delim)
+    d = parse_text(blocks)
     print(md_export(d))
-    write_to_file(md_export(d))
+    write_to_file(md_export(d), output_file)
 
 if(__name__=="__main__"):
     main()
