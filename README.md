@@ -1,20 +1,26 @@
 # Tolino Notes Parser (Working Title)
-The Tolino E-Reader saves highlighted text and notes in an unwieldy `notes.txt` file. So the purpose of this project is to parse this file and export the data
-in markdown format.
+The Tolino E-Reader saves highlighted text and notes in an unwieldy `notes.txt` file. So the purpose of this project is to parse this file
+and have multiple output formats and multiple managment features available.
 
-But once the data is ingested, further functionality and output formats would be easy to implement.
+Currently, the output of the script is intended for use with [logseq](https://github.com/logseq/logseq)
 
 ## Usage
 
-The input file (`notes.txt`) in the same directory by default. But it could be specified as an arguemt as follows:
+Once you have your `notes.txt` run:
+
 ``` bash
-python main.py -i /rel/path/to/file
+python main.py -i /rel/path/to/input -o /rel/path/to/output
 ```
-The output type (either to file `output.txt` or to stdout) is hard-coded right now.
+The cli arguments default to `-i notes.txt` and `-o output.txt`.
+
+There are a couple of global variables that are hard-coded at the top of the script.
+
+The script also prints to stdout.
 
 ## Shortcomings 
 
-* Duplicates are not yet accounted for.
+* The output structure isn't configurable and so is only adjusted to my needs at the moment.
+* Duplicates are not yet accounted for. For example:
   * When a note is added to a highlight
   * When a note is edited (once or multiple times) etc.
   
