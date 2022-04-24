@@ -27,26 +27,32 @@ def fix_indent(t, indent_lvl, is_highlight):
         prefix = indent_lvl*'\t' +  ("  >" if is_highlight else "  ")
     return txt.rstrip("\n") #for loop leaves a trailing newline character.
 
-def md_export(d):
+def md_export(b):
     global parsed_text # to access the global variable parsed_text
-    for book in d:
-        parsed_text += "# {}\n".format(book)
-        for page in d[book]:
-            parsed_text += "- p{}\n".format(page)
-            for note in d[book][page]: # this is a list: [date, quote, note] if note else [date, quote]
-                parsed_text += "\t- On {}\n".format(note[0].strftime(date_format + " at " + time_format))
-                parsed_text += fix_indent(note[1], 2, True)
-                parsed_text += "\n"
-                if len(note) > 2: # then there's a note
-                    parsed_text += "\t\t\t- {}\n".format(note_prefix)
-                    parsed_text += fix_indent(note[2], 4 ,False)
+    pages = b["page"].unique()
+    for page in pages:
+        parsed_text += "- p{}\n".format(page)
+        dates = b.loc[b["page"] == page]
+        for date in dates["date"].unique():
+            parsed_text += "\t- On {}\n".format(date.strftime(date_format))
+            times = dates.loc[dates["date"] == date]
+            for time in times["time"].unique():
+                parsed_text += "\t\t- {}\n".format(time.strftime(time_format))
+                highlights = times.loc[times["time"] == time]
+                for index, row in highlights.iterrows():
+                    parsed_text += fix_indent(row["quote"], 3, True)
                     parsed_text += "\n"
-        parsed_text += delim +"\n"
+                    if row["note"]:
+                        parsed_text += "\t\t\t\t- {}\n".format(note_prefix)
+                        parsed_text += fix_indent(row["note"], 5, False)
+                        parsed_text += "\n"
+    parsed_text += delim + "\n"
     return parsed_text
 
 def write_to_file(t, output_file):
     with open(output_file, 'w+') as f:
         f.write(t)
+        f.close()
 
 def sanitize(unit):
     a = re.sub('^\n','', unit)
@@ -84,6 +90,7 @@ def parse_text(blocks):
     return d
 
 def main():
+    global parsed_text # to access the global variable parsed_text
     ap = argparse.ArgumentParser()
     ap.add_argument('-i', type=str, required=False)
     ap.add_argument('-o', type=str, required=False)
@@ -97,15 +104,12 @@ def main():
     blocks = text.split(delim)
     d = parse_text(blocks)
     for book in d:
-        print("# {}".format(book))
         df = pd.DataFrame.from_dict(d[book])
         to_delete = df[df.duplicated(["quote"], keep="last")].index
-        book_notes = df.drop(to_delete)
-        print(book_notes.reset_index())
-        print(delim)
-
-    #print(md_export(d))
-    #write_to_file(md_export(d), output_file)
+        deduplicated = df.drop(to_delete)
+        parsed_text += "# {}\n".format(book)
+        md_export(deduplicated)
+    write_to_file(parsed_text, output_file)
 
 if(__name__=="__main__"):
     main()
